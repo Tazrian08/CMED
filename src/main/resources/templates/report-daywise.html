@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day-wise Report</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Prescription Management</h1>
+            <nav>
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/reports/daywise}">Reports</a>
+                <form method="post" th:action="@{/logout}" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Day-wise Prescription Count</h2>
+
+        <div class="filter-section">
+            <form method="get" th:action="@{/reports/daywise}" class="filter-form">
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="number" id="year" name="year" class="form-control"
+                           th:value="${selectedYear}" min="2000" max="2100" required>
+                </div>
+                <div class="form-group">
+                    <label for="month">Month</label>
+                    <select id="month" name="month" class="form-control" required>
+                        <option th:each="i : ${#numbers.sequence(1, 12)}"
+                                th:value="${i}"
+                                th:text="${i}"
+                                th:selected="${i == selectedMonth}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Generate Report</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3 th:text="'Report for ' + ${monthName} + ' ' + ${selectedYear}"></h3>
+
+            <div th:if="${#lists.isEmpty(dayCounts)}" style="text-align: center; padding: 40px; color: #666;">
+                <p>No prescriptions found for this month.</p>
+            </div>
+
+            <table th:if="${!#lists.isEmpty(dayCounts)}">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Prescription Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="dayCount : ${dayCounts}">
+                        <td th:text="${dayCount.day}"></td>
+                        <td th:text="${dayCount.count}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${!#lists.isEmpty(dayCounts)}" style="margin-top: 20px;">
+                <strong>Total Prescriptions: </strong>
+                <span th:text="${#aggregates.sum(dayCounts.![count])}"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

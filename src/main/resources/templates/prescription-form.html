@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Edit Prescription' : 'New Prescription'"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Prescription Management</h1>
+            <nav>
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/reports/daywise}">Reports</a>
+                <form method="post" th:action="@{/logout}" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <h2 th:text="${isEdit} ? 'Edit Prescription' : 'Create New Prescription'"></h2>
+
+            <form id="prescriptionForm" method="post"
+                  th:action="${isEdit} ? @{/prescriptions/{id}(id=${prescription.id})} : @{/prescriptions}"
+                  th:object="${prescription}">
+
+                <div class="form-group">
+                    <label for="prescriptionDate">Prescription Date *</label>
+                    <input type="date" id="prescriptionDate" name="prescriptionDate"
+                           class="form-control" th:field="*{prescriptionDate}" required>
+                    <div th:if="${#fields.hasErrors('prescriptionDate')}" class="error"
+                         th:errors="*{prescriptionDate}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="patientName">Patient Name *</label>
+                    <input type="text" id="patientName" name="patientName"
+                           class="form-control" th:field="*{patientName}"
+                           minlength="2" maxlength="100" required>
+                    <div th:if="${#fields.hasErrors('patientName')}" class="error"
+                         th:errors="*{patientName}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="patientAge">Patient Age *</label>
+                    <input type="number" id="patientAge" name="patientAge"
+                           class="form-control" th:field="*{patientAge}"
+                           min="0" max="120" required>
+                    <div th:if="${#fields.hasErrors('patientAge')}" class="error"
+                         th:errors="*{patientAge}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="patientGender">Patient Gender *</label>
+                    <select id="patientGender" name="patientGender"
+                            class="form-control" th:field="*{patientGender}" required>
+                        <option value="">Select Gender</option>
+                        <option th:each="gender : ${genders}"
+                                th:value="${gender}"
+                                th:text="${gender}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('patientGender')}" class="error"
+                         th:errors="*{patientGender}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="diagnosis">Diagnosis</label>
+                    <textarea id="diagnosis" name="diagnosis"
+                              class="form-control" th:field="*{diagnosis}"
+                              maxlength="2000" rows="4"></textarea>
+                    <div th:if="${#fields.hasErrors('diagnosis')}" class="error"
+                         th:errors="*{diagnosis}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="medicines">Medicines</label>
+                    <textarea id="medicines" name="medicines"
+                              class="form-control" th:field="*{medicines}"
+                              maxlength="2000" rows="4"></textarea>
+                    <div th:if="${#fields.hasErrors('medicines')}" class="error"
+                         th:errors="*{medicines}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="nextVisitDate">Next Visit Date</label>
+                    <input type="date" id="nextVisitDate" name="nextVisitDate"
+                           class="form-control" th:field="*{nextVisitDate}">
+                    <div th:if="${#fields.hasErrors('nextVisitDate')}" class="error"
+                         th:errors="*{nextVisitDate}"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="submit" class="btn btn-success">
+                        <span th:text="${isEdit} ? 'Update' : 'Create'"></span>
+                    </button>
+                    <a th:href="@{/dashboard}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/validation.js}"></script>
+</body>
+</html>

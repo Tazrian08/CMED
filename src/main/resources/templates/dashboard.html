@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Prescription Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Prescription Management</h1>
+            <nav>
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/reports/daywise}">Reports</a>
+                <form method="post" th:action="@{/logout}" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Prescriptions</h2>
+            <a th:href="@{/prescriptions/new}" class="btn btn-success">+ New Prescription</a>
+        </div>
+
+        <div class="filter-section">
+            <h3>Filter by Date Range</h3>
+            <form method="get" th:action="@{/dashboard}" class="filter-form">
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control"
+                           th:value="${startDate}" required>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control"
+                           th:value="${endDate}" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div th:if="${#lists.isEmpty(prescriptions)}" style="text-align: center; padding: 40px; color: #666;">
+                <p>No prescriptions found for the selected date range.</p>
+            </div>
+
+            <table th:if="${!#lists.isEmpty(prescriptions)}">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Patient Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Diagnosis</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="prescription : ${prescriptions}">
+                        <td th:text="${#temporals.format(prescription.prescriptionDate, 'dd-MMM-yyyy')}"></td>
+                        <td th:text="${prescription.patientName}"></td>
+                        <td th:text="${prescription.patientAge}"></td>
+                        <td th:text="${prescription.patientGender}"></td>
+                        <td th:text="${prescription.diagnosis != null && !#strings.isEmpty(prescription.diagnosis) ?
+                                       (#strings.length(prescription.diagnosis) > 50 ?
+                                       #strings.substring(prescription.diagnosis, 0, 50) + '...' :
+                                       prescription.diagnosis) : '-'}"></td>
+                        <td>
+                            <div class="actions">
+                                <a th:href="@{/prescriptions/{id}/view(id=${prescription.id})}"
+                                   class="btn btn-primary" style="padding: 5px 10px; font-size: 0.875rem;">View</a>
+                                <a th:href="@{/prescriptions/{id}/edit(id=${prescription.id})}"
+                                   class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.875rem;">Edit</a>
+                                <form th:id="'deleteForm-' + ${prescription.id}" method="post"
+                                      th:action="@{/prescriptions/{id}/delete(id=${prescription.id})}"
+                                      style="display: inline;">
+                                    <button type="button" class="btn btn-danger"
+                                            style="padding: 5px 10px; font-size: 0.875rem;"
+                                            th:onclick="'confirmDelete(' + ${prescription.id} + ')'">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${totalPages > 1}" class="pagination">
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/dashboard(page=${currentPage - 1}, startDate=${startDate}, endDate=${endDate})}">
+                    Previous
+                </a>
+                <span th:text="'Page ' + (${currentPage + 1}) + ' of ' + ${totalPages}"></span>
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{/dashboard(page=${currentPage + 1}, startDate=${startDate}, endDate=${endDate})}">
+                    Next
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/validation.js}"></script>
+</body>
+</html>

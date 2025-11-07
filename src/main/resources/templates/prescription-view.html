@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Prescription</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Prescription Management</h1>
+            <nav>
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/reports/daywise}">Reports</a>
+                <form method="post" th:action="@{/logout}" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <h2>Prescription Details</h2>
+
+            <div style="margin: 20px 0;">
+                <div style="display: grid; grid-template-columns: 200px 1fr; gap: 15px;">
+                    <div style="font-weight: 600; color: #555;">Prescription ID:</div>
+                    <div th:text="${prescription.id}"></div>
+
+                    <div style="font-weight: 600; color: #555;">Prescription Date:</div>
+                    <div th:text="${#temporals.format(prescription.prescriptionDate, 'dd-MMM-yyyy')}"></div>
+
+                    <div style="font-weight: 600; color: #555;">Patient Name:</div>
+                    <div th:text="${prescription.patientName}"></div>
+
+                    <div style="font-weight: 600; color: #555;">Patient Age:</div>
+                    <div th:text="${prescription.patientAge}"></div>
+
+                    <div style="font-weight: 600; color: #555;">Patient Gender:</div>
+                    <div th:text="${prescription.patientGender}"></div>
+
+                    <div style="font-weight: 600; color: #555;">Diagnosis:</div>
+                    <div th:text="${prescription.diagnosis != null && !#strings.isEmpty(prescription.diagnosis) ?
+                                   prescription.diagnosis : '-'}"></div>
+
+                    <div style="font-weight: 600; color: #555;">Medicines:</div>
+                    <div th:text="${prescription.medicines != null && !#strings.isEmpty(prescription.medicines) ?
+                                   prescription.medicines : '-'}"></div>
+
+                    <div style="font-weight: 600; color: #555;">Next Visit Date:</div>
+                    <div th:text="${prescription.nextVisitDate != null ?
+                                   #temporals.format(prescription.nextVisitDate, 'dd-MMM-yyyy') : '-'}"></div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <a th:href="@{/prescriptions/{id}/edit(id=${prescription.id})}"
+                   class="btn btn-primary">Edit</a>
+                <a th:href="@{/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
