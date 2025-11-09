@@ -16,6 +16,7 @@ A complete Java Spring Boot web application for managing medical prescriptions w
 ## Features
 
 ### 1. Authentication & Security
+
 - Spring Security with form-based login
 - H2 database for user storage
 - No anonymous access - all routes protected
@@ -23,12 +24,14 @@ A complete Java Spring Boot web application for managing medical prescriptions w
 - Auto-redirect to `/dashboard` after successful login
 
 ### 2. Prescription CRUD Operations
+
 - **Create**: Add new prescriptions with validation
 - **Read**: View prescription details
 - **Update**: Edit existing prescriptions
 - **Delete**: Remove prescriptions with confirmation dialog
 
 #### Entity Fields:
+
 - `id` (Long, auto-generated)
 - `prescriptionDate` (LocalDate, required)
 - `patientName` (String, 2-100 chars, required)
@@ -39,28 +42,33 @@ A complete Java Spring Boot web application for managing medical prescriptions w
 - `nextVisitDate` (LocalDate, optional)
 
 ### 3. List & Filter
+
 - Dashboard displays prescriptions in a table
 - Date-range filter (defaults to current month)
 - Pagination support
 - Sorted by prescription date (descending)
 
 ### 4. Validation
+
 - **Server-side**: Bean Validation annotations
 - **Client-side**: HTML5 + JavaScript validation
 - Clear error messages on form submission
 
 ### 5. Reporting
+
 - Day-wise prescription count for selected month
 - Shows `[day, count]` data in tabular format
 - Filter by year and month
 
 ### 6. REST API
+
 - **Endpoint**: `GET /api/v1/prescriptions`
 - Paginated JSON response
 - DTOs exclude internal fields (createdDate, modifiedDate)
 - Consistent error response format
 
 ### 7. External API Integration
+
 - **RxNav API**: Drug interaction lookup
 - **Endpoint**: `GET /api/v1/rxnav/interactions/{rxcui}`
 - Example: `/api/v1/rxnav/interactions/341248`
@@ -122,25 +130,30 @@ src/main/resources/
 ## Building and Running
 
 ### Prerequisites
+
 - Java 17 or higher
 - Maven 3.6 or higher
 
 ### Build
+
 ```bash
 mvn clean install
 ```
 
 ### Run
+
 ```bash
 mvn spring-boot:run
 ```
 
 Or run the JAR file:
+
 ```bash
 java -jar target/prescription-management-1.0.0.jar
 ```
 
 ### Access
+
 - **Application**: http://localhost:8080
 - **H2 Console**: http://localhost:8080/h2-console
   - JDBC URL: `jdbc:h2:mem:prescriptiondb`
@@ -149,24 +162,28 @@ java -jar target/prescription-management-1.0.0.jar
 
 ## Demo Credentials
 
-| Username | Password   | Role |
-|----------|------------|------|
-| admin    | admin123   | USER |
-| doctor   | doctor123  | USER |
+| Username | Password  | Role |
+| -------- | --------- | ---- |
+| admin    | admin123  | USER |
+| doctor   | doctor123 | USER |
 
 ## API Endpoints
 
 ### REST API
+
 - `GET /api/v1/prescriptions?page=0&size=10&sortBy=prescriptionDate&sortDir=desc`
+
   - Returns paginated prescriptions in JSON format
 
 - `GET /api/v1/prescriptions/{id}`
+
   - Returns a single prescription by ID
 
 - `GET /api/v1/rxnav/interactions/{rxcui}`
   - Returns drug interactions from RxNav API
 
 ### Web Endpoints
+
 - `GET /login` - Login page
 - `GET /dashboard` - Main dashboard with prescription list
 - `GET /prescriptions/new` - Create prescription form
@@ -178,6 +195,7 @@ java -jar target/prescription-management-1.0.0.jar
 ## Validation Rules
 
 ### Prescription Form
+
 - Prescription Date: Required
 - Patient Name: Required, 2-100 characters
 - Patient Age: Required, 0-120
@@ -189,6 +207,7 @@ java -jar target/prescription-management-1.0.0.jar
 ## Architecture
 
 ### Clean Architecture Pattern
+
 ```
 Controller Layer → Service Layer → Repository Layer → Entity Layer
 ```
@@ -201,6 +220,7 @@ Controller Layer → Service Layer → Repository Layer → Entity Layer
 - **Mappers**: Convert between entities and DTOs
 
 ### Security
+
 - BCrypt password encoding
 - Spring Security filter chain
 - Form-based authentication
@@ -209,6 +229,7 @@ Controller Layer → Service Layer → Repository Layer → Entity Layer
 ## Database Schema
 
 ### Users Table
+
 ```sql
 CREATE TABLE users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -220,6 +241,7 @@ CREATE TABLE users (
 ```
 
 ### Prescriptions Table
+
 ```sql
 CREATE TABLE prescriptions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -238,12 +260,14 @@ CREATE TABLE prescriptions (
 ## Sample Data
 
 The application initializes with:
+
 - 2 demo users (admin, doctor)
 - 5 sample prescriptions with realistic data
 
 ## Error Handling
 
 Global exception handler provides consistent error responses:
+
 ```json
 {
   "timestamp": "2025-11-06T10:30:00",
@@ -253,12 +277,3 @@ Global exception handler provides consistent error responses:
   "details": ["Field errors"]
 }
 ```
-
-## Future Enhancements
-- User registration
-- Role-based access control (ADMIN, DOCTOR, RECEPTIONIST)
-- PDF export for prescriptions
-- Email notifications
-- Advanced search and filtering
-- Audit logging
-- Profile management
